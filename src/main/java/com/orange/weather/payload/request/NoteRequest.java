@@ -1,5 +1,6 @@
-package com.orange.weather.payload.response.weather;
+package com.orange.weather.payload.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,8 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WeatherData {
-    private Location location;
-    private Current current;
+public class NoteRequest {
+    @NotBlank
     private String note;
 }

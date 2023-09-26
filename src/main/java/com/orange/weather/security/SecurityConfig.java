@@ -22,15 +22,24 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors();
+
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(config -> config
 
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/error").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/error").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/users/info").hasAnyAuthority(Role.ROLE_SUPER_ADMIN.name(), Role.ROLE_ADMIN.name(), Role.ROLE_USER.name())
+                .requestMatchers(HttpMethod.GET, "/api/users/info").hasAnyAuthority(Role.ROLE_SUPER_ADMIN.name(), Role.ROLE_ADMIN.name(), Role.ROLE_USER.name())
+                .requestMatchers(HttpMethod.GET, "/api/users/info").hasAuthority(Role.ROLE_ADMIN.name())
+                .requestMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/admins").hasAuthority(Role.ROLE_SUPER_ADMIN.name())
                 .requestMatchers(HttpMethod.POST, "/api/admins").hasAuthority(Role.ROLE_SUPER_ADMIN.name())
                 .requestMatchers(HttpMethod.DELETE, "/api/admins/**").hasAuthority(Role.ROLE_SUPER_ADMIN.name())
-                .requestMatchers("/api/notes").hasAuthority(Role.ROLE_SUPER_ADMIN.name())
+                .requestMatchers("/api/notes").hasAnyAuthority(Role.ROLE_ADMIN.name(), Role.ROLE_SUPER_ADMIN.name())
                 .requestMatchers(HttpMethod.GET, "/api/admins/**").hasAuthority(Role.ROLE_ADMIN.name())
                 .requestMatchers(HttpMethod.PUT, "/api/admins/**").hasAuthority(Role.ROLE_ADMIN.name())
                 .requestMatchers("/api/notes/**").hasAnyAuthority(Role.ROLE_ADMIN.name(), Role.ROLE_SUPER_ADMIN.name())

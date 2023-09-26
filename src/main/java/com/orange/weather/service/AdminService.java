@@ -1,6 +1,8 @@
 package com.orange.weather.service;
 
 import com.orange.weather.entity.Admin;
+import com.orange.weather.entity.Note;
+import com.orange.weather.entity.PredefinedNote;
 import com.orange.weather.entity.Role;
 import com.orange.weather.exception.EmailAlreadyExistsException;
 import com.orange.weather.repository.AdminRepository;
@@ -8,6 +10,8 @@ import com.orange.weather.payload.request.RegisterRequest;
 import com.orange.weather.payload.request.UserUpdateRequest;
 import com.orange.weather.payload.response.UserInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +27,7 @@ public class AdminService {
     private final PasswordEncoder passwordEncoder;
 
     public List<Admin> getAllAdmins() {
-        return adminRepository.findAll();
+        return adminRepository.findAllByRole(Role.ROLE_ADMIN);
     }
 
     public Admin getAdminById(int id) {
@@ -62,10 +66,10 @@ public class AdminService {
     }
 
     @Transactional
-    public void deleteAdmin(int id) {
-        Optional<Admin> admin = adminRepository.findById(id);
+    public void deleteAdmin(String email) {
+        Optional<Admin> admin = adminRepository.findByEmail(email);
         if (admin.isEmpty())
-            throw new UsernameNotFoundException("admin not found with id:" + id);
+            throw new UsernameNotFoundException("admin not found with email:" + email);
 
         adminRepository.delete(admin.get());
     }

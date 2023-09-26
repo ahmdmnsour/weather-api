@@ -1,29 +1,23 @@
 package com.orange.weather.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.Date;
 
-@Setter
-@Getter
-@ToString
+@Data
 @Entity
+@NoArgsConstructor
+    @ToString(exclude = "admin")
 @Table(name = "notes")
 public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(name = "min_temp", nullable = false)
-    private int minTemp;
-
-    @Column(name = "max_temp", nullable = false)
-    private int maxTemp;
 
     @Column(name = "note", nullable = false)
     private String note;
@@ -34,6 +28,13 @@ public class Note {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "admin_id", nullable = false)
+    @JsonIgnore
+    @JoinColumn(name = "admin_id")
     private Admin admin;
+
+    public Note(String note, Date creationDate, Admin admin) {
+        this.note = note;
+        this.creationDate = creationDate;
+        this.admin = admin;
+    }
 }

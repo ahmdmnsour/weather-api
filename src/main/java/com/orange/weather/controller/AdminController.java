@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200/")
 @RestController
 @RequestMapping("/api/admins")
 public class AdminController {
@@ -44,9 +45,9 @@ public class AdminController {
         return ResponseEntity.ok().body(adminService.updateAdmin(id, request));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAdmin(@PathVariable int id) throws ObjectNotFoundException {
-        adminService.deleteAdmin(id);
-        return ResponseEntity.ok().body("Success");
+    @DeleteMapping("/{email}")
+    public ResponseEntity<Object> deleteAdmin(@PathVariable String email) throws ObjectNotFoundException {
+        adminService.deleteAdmin(email);
+        return ResponseEntity.ok().build();
     }
 }

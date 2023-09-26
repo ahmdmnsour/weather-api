@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200/")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -25,13 +26,23 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable int id) throws ObjectNotFoundException {
-        return ResponseEntity.ok().body(userService.getUserById(id));
+//    @GetMapping("/{id}")
+//    public ResponseEntity<User> getUser(@PathVariable int id) throws ObjectNotFoundException {
+//        return ResponseEntity.ok().body(userService.getUserById(id));
+//    }
+
+    @GetMapping("/info")
+    public ResponseEntity<User> getUser() {
+        return ResponseEntity.ok().body(userService.getUserDetails());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody UserUpdateRequest request) throws ObjectNotFoundException {
-        return ResponseEntity.ok().body(userService.updateUser(id, request));
+    @PutMapping("/info")
+    public ResponseEntity<User> updateUser(@RequestBody UserUpdateRequest request) {
+        return ResponseEntity.ok().body(userService.updateUser(request));
     }
+
+//    @PutMapping("/{id}")
+//    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody UserUpdateRequest request) throws ObjectNotFoundException {
+//        return ResponseEntity.ok().body(userService.updateUser(id, request));
+//    }
 }
