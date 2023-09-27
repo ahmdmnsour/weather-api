@@ -16,21 +16,9 @@ public class WeatherService {
 
     public WeatherData getWeatherData(String city) {
         String url = BASE_URL + "?key=" + API_KEY + "&q=" + city + "&aqi=no";
-//
-//        WeatherData data = new RestTemplate().getForObject(url, WeatherData.class);
-////        String note = noteService.getTodayNote();
-////
-////        data.setNote();
-
-//        RestTemplate restTemplate = new RestTemplate();
-//        WeatherData data =
-//        Map<String, Object> parsedData = JsonParserFactory.getJsonParser().parseMap(data);
-//        System.out.println(parsedData.get("location").);
-
-        //weatherData.setCity(parsedData.get("location"));
+;
         WeatherData weatherData = new RestTemplate().getForObject(url, WeatherData.class);
-        Note note = noteService.getTodayNote();
-        weatherData.setNote(note.getNote());
+        weatherData.setNotes(noteService.getTodayNotes());
 
         return weatherData;
     }

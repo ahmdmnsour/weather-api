@@ -5,11 +5,14 @@ import com.orange.weather.entity.Note;
 import com.orange.weather.entity.PredefinedNote;
 import com.orange.weather.entity.Role;
 import com.orange.weather.exception.EmailAlreadyExistsException;
+import com.orange.weather.payload.response.NoteResponse;
 import com.orange.weather.repository.AdminRepository;
 import com.orange.weather.payload.request.RegisterRequest;
 import com.orange.weather.payload.request.UserUpdateRequest;
 import com.orange.weather.payload.response.UserInfo;
+import com.orange.weather.repository.NoteRepository;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,6 +27,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AdminService {
     private final AdminRepository adminRepository;
+    private final NoteRepository noteRepository;
     private final PasswordEncoder passwordEncoder;
 
     public List<Admin> getAllAdmins() {
@@ -71,6 +75,7 @@ public class AdminService {
         if (admin.isEmpty())
             throw new UsernameNotFoundException("admin not found with email:" + email);
 
+        noteRepository.deleteAllByAdmin(admin.get());
         adminRepository.delete(admin.get());
     }
 }

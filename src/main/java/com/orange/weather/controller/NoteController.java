@@ -5,6 +5,7 @@ import com.orange.weather.entity.PredefinedNote;
 import com.orange.weather.exception.ObjectNotFoundException;
 import com.orange.weather.exception.UnauthorizedAccessException;
 import com.orange.weather.payload.request.NoteRequest;
+import com.orange.weather.payload.response.NoteResponse;
 import com.orange.weather.service.AdminService;
 import com.orange.weather.service.NoteService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class NoteController {
     private final NoteService noteService;
 
     @GetMapping
-    public ResponseEntity<List<Note>> getAllNotes() {
+    public ResponseEntity<List<NoteResponse>> getAllNotes() {
         return ResponseEntity.ok(noteService.getAllNotes());
     }
 

@@ -8,6 +8,7 @@ import com.orange.weather.exception.ObjectNotFoundException;
 import com.orange.weather.exception.UnauthorizedAccessException;
 import com.orange.weather.payload.request.NoteRequest;
 import com.orange.weather.payload.request.PredefinedNoteRequest;
+import com.orange.weather.payload.response.NoteResponse;
 import com.orange.weather.repository.AdminRepository;
 import com.orange.weather.repository.NoteRepository;
 import com.orange.weather.repository.PredefinedNoteRepository;
@@ -20,10 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +30,14 @@ public class NoteService {
     private final PredefinedNoteRepository predefinedNoteRepository;
     private final AdminRepository adminRepository;
 
-    public List<Note> getAllNotes() {
-        return noteRepository.findAll();
+    public List<NoteResponse> getAllNotes() {
+        List<Note> notes = noteRepository.findAll();
+
+        List<NoteResponse> response = new ArrayList<>();
+        for (Note note : notes) {
+            response.add(new NoteResponse(note.getNote(), note.getCreationDate(), note.getAdmin().getName()));
+        }
+        return response;
     }
 
     public List<PredefinedNote> getAllPredefinedNotes() { return predefinedNoteRepository.findAll(); }
@@ -46,7 +50,7 @@ public class NoteService {
         return note.get();
     }
 
-    public Note getTodayNote() {
+    public List<NoteResponse> getTodayNotes() {
         LocalDateTime startOfDay = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime endOfDay = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
         Instant instant = startOfDay.atZone(ZoneId.systemDefault()).toInstant();
@@ -54,9 +58,13 @@ public class NoteService {
         instant = endOfDay.atZone(ZoneId.systemDefault()).toInstant();
         Date end = Date.from(instant);
         List<Note> todayNotes = noteRepository.findAllByCreationDateBetweenOrderByCreationDateDesc(start, end);
+        List<NoteResponse> response = new ArrayList<>();
+        for (Note note : todayNotes) {
+            response.add(new NoteResponse(note.getNote(), note.getCreationDate(), note.getAdmin().getName()));
 
+        }
         System.out.println(todayNotes);
-        return todayNotes.get(0);
+        return response;
     }
 
     @Transactional
@@ -68,18 +76,6 @@ public class NoteService {
 
         return noteRepository.save(note);
     }
-
-//    @Transactional
-//    public Note updateNote(int id, NoteRequest request) throws ObjectNotFoundException {
-//        Optional<Note> note = noteRepository.findById(id);
-//        if (note.isEmpty())
-//            throw new ObjectNotFoundException("note not found with id:" + id);
-//
-//        note.get().setNote(request.getNote());
-//        note.get().saet(new Date());
-//
-//        return noteRepository.save(note.get());
-//    }
 
     @Transactional
     public void deleteNote(int id) throws ObjectNotFoundException, UnauthorizedAccessException {

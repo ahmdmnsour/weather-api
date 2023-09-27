@@ -12,7 +12,7 @@ import java.util.Date;
 @Data
 @Entity
 @NoArgsConstructor
-    @ToString(exclude = "admin")
+@ToString(exclude = "admin")
 @Table(name = "notes")
 public class Note {
     @Id
